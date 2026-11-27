@@ -1,5 +1,5 @@
-# Runs the unit tests on every push. On the main branch the app is then
-# built and published to GitHub Pages.
+# Runs the unit tests on every push. On the repository's default branch the
+# app is then built and published to GitHub Pages.
 name: Test & Deploy
 
 on:
@@ -28,12 +28,12 @@ jobs:
       - run: npm test
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
-        if: github.ref == 'refs/heads/main'
+        if: github.ref_name == github.event.repository.default_branch
         with:
           path: dist
 
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref_name == github.event.repository.default_branch
     needs: build
     runs-on: ubuntu-latest
     environment:
