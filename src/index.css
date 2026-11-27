@@ -1,0 +1,231 @@
+@import '@fontsource/pixelify-sans/latin-400.css';
+@import '@fontsource/pixelify-sans/latin-600.css';
+@import '@fontsource/nunito/latin-400.css';
+@import '@fontsource/nunito/latin-700.css';
+@import '@fontsource/nunito/latin-800.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Theme tokens (RGB triplets for Tailwind alpha support) ---------- */
+:root {
+  --night-950: 18 12 23;
+  --night-900: 26 18 32;
+  --night-800: 36 26 44;
+  --night-700: 47 35 56;
+  --night-600: 61 47 72;
+  --parchment-100: 255 244 224;
+  --parchment-200: 243 226 196;
+  --parchment-300: 217 194 156;
+  --parchment-400: 168 145 111;
+  color-scheme: dark;
+}
+
+:root.light {
+  --night-950: 234 220 196;
+  --night-900: 250 240 222;
+  --night-800: 242 228 204;
+  --night-700: 230 212 182;
+  --night-600: 214 192 158;
+  --parchment-100: 52 32 28;
+  --parchment-200: 74 50 42;
+  --parchment-300: 110 82 66;
+  --parchment-400: 140 112 92;
+  color-scheme: light;
+}
+
+html,
+body {
+  background: rgb(var(--night-900));
+  color: rgb(var(--parchment-100));
+  height: 100%;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: Nunito, system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Subtle starry backdrop for the cozy night vibe */
+.bg-stars {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, rgb(var(--parchment-100) / 0.25), transparent),
+    radial-gradient(1px 1px at 120px 80px, rgb(var(--parchment-100) / 0.18), transparent),
+    radial-gradient(1px 1px at 200px 20px, rgb(var(--parchment-100) / 0.22), transparent),
+    radial-gradient(1px 1px at 280px 140px, rgb(var(--parchment-100) / 0.15), transparent),
+    radial-gradient(1.5px 1.5px at 60px 160px, rgb(var(--parchment-100) / 0.2), transparent);
+  background-size: 320px 200px;
+}
+:root.light .bg-stars {
+  background-image: none;
+}
+
+/* Light mode: darken the bright accent colours for readable contrast */
+:root.light .text-ember-300 { color: #b4471a; }
+:root.light .text-ember-400 { color: #c85a1e; }
+:root.light .text-moss { color: #3f7a32; }
+:root.light .chip { filter: brightness(0.55) saturate(1.6); }
+
+/* ---------- Safe areas (Notch / Dynamic Island / Home indicator) ---------- */
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top), 12px);
+}
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 8px);
+}
+
+/* ---------- Pixel UI helpers ---------- */
+@layer components {
+  .pixel-card {
+    @apply rounded-xl border-2 border-night-600 bg-night-800 shadow-pixel;
+  }
+  .pixel-btn {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border-2 border-black/30 px-4 font-pixel text-lg shadow-pixel transition-transform active:translate-y-[3px] active:shadow-none disabled:opacity-40;
+  }
+  .pixel-btn-primary {
+    @apply pixel-btn bg-ember-500 text-night-950;
+  }
+  :root.light .pixel-btn-primary {
+    @apply text-white;
+  }
+  .pixel-btn-ghost {
+    @apply pixel-btn bg-night-700 text-parchment-100;
+  }
+  .field {
+    @apply w-full rounded-xl border-2 border-night-600 bg-night-900 px-4 py-3 text-base text-parchment-100 outline-none placeholder:text-parchment-400 focus:border-ember-400;
+  }
+}
+
+/* ---------- Funke animations ---------- */
+.funke-idle,
+.funke-jump,
+.funke-sleep {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.funke-idle {
+  animation: funke-idle 2.8s ease-in-out infinite;
+}
+.funke-sleep {
+  animation: funke-sleep 4.5s ease-in-out infinite;
+  filter: saturate(0.65) brightness(0.85);
+}
+.funke-jump {
+  animation: funke-jump 0.9s cubic-bezier(0.3, 0.7, 0.4, 1) both;
+}
+@keyframes funke-idle {
+  0%, 100% { transform: rotate(-2deg) scale(1, 1); }
+  50% { transform: rotate(2deg) scale(0.98, 1.03); }
+}
+@keyframes funke-sleep {
+  0%, 100% { transform: scale(1.02, 0.96); }
+  50% { transform: scale(0.98, 1.02); }
+}
+@keyframes funke-jump {
+  0% { transform: translateY(0) scale(1, 1); }
+  15% { transform: translateY(0) scale(1.18, 0.8); }
+  40% { transform: translateY(-28%) scale(0.88, 1.14) rotate(-6deg); }
+  60% { transform: translateY(-30%) scale(0.92, 1.1) rotate(6deg); }
+  80% { transform: translateY(0) scale(1.14, 0.86); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+/* two-frame flame flicker */
+.flicker-a { animation: flick-a 0.5s steps(1) infinite; }
+.flicker-b { animation: flick-b 0.5s steps(1) infinite; }
+.flicker-a-slow { animation: flick-a 1.6s steps(1) infinite; }
+.flicker-b-slow { animation: flick-b 1.6s steps(1) infinite; }
+@keyframes flick-a { 0% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes flick-b { 0% { opacity: 0; } 50% { opacity: 1; } }
+
+/* blink: frame shown for a short moment every few seconds */
+.funke-blink { opacity: 0; animation: blink 4.2s steps(1) infinite; }
+@keyframes blink { 0% { opacity: 0; } 94% { opacity: 1; } 97% { opacity: 0; } }
+
+.ember { animation: ember 2.4s ease-out infinite; transform-box: fill-box; }
+@keyframes ember {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-10px); opacity: 0; }
+}
+.twinkle { animation: twinkle 1.8s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+.funke-aura { animation: aura 3s ease-in-out infinite; }
+@keyframes aura { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+.zzz { animation: zzz 3s ease-in-out infinite; opacity: 0; }
+@keyframes zzz {
+  0% { opacity: 0; transform: translate(0, 0); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translate(3px, -6px); }
+}
+
+/* ---------- Celebration ---------- */
+.particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 60;
+  animation: particle var(--dur, 900ms) cubic-bezier(0.15, 0.6, 0.35, 1) forwards;
+}
+@keyframes particle {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.4); opacity: 0; }
+}
+.xp-float {
+  position: fixed;
+  pointer-events: none;
+  z-index: 61;
+  animation: xp-float 1.3s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+}
+@keyframes xp-float {
+  0% { transform: translate(-50%, 0) scale(0.6); opacity: 0; }
+  15% { transform: translate(-50%, -12px) scale(1.25); opacity: 1; }
+  100% { transform: translate(-50%, -110px) scale(1); opacity: 0; }
+}
+
+.pop-in { animation: pop-in 0.35s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+@keyframes pop-in { 0% { transform: scale(0.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.check-pop { animation: check-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+@keyframes check-pop { 0% { transform: scale(0.3) rotate(-30deg); } 100% { transform: scale(1) rotate(0); } }
+.slide-up { animation: slide-up 0.28s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+@keyframes slide-up { 0% { transform: translateY(100%); } 100% { transform: translateY(0); } }
+.fade-in { animation: fade-in 0.2s ease-out both; }
+@keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+.bubble-in { animation: bubble-in 0.3s cubic-bezier(0.3, 1.4, 0.5, 1) both; transform-origin: 20% 100%; }
+@keyframes bubble-in { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.shake { animation: shake 0.4s ease-in-out; }
+@keyframes shake { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
+
+/* ---------- Portrait only: hint overlay in landscape ---------- */
+.landscape-hint { display: none; }
+@media (orientation: landscape) and (max-height: 500px) {
+  .landscape-hint { display: flex; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .flicker-b, .flicker-b-slow, .funke-blink { display: none; }
+}
